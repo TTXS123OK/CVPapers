@@ -1,0 +1,33 @@
+name: Fetch arXiv cs.CV Papers
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  fetch_papers:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install arxiv
+
+    - name: Run script to fetch papers
+      run: python arxiv_collect.py --catalog cs.CV --start_date $(date -d "yesterday" +"%Y-%m-%d") --end_date $(date -d "yesterday" +"%Y-%m-%d")
+
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Add fetched papers for $(date -d "yesterday" +"%Y-%m-%d")" || echo "No changes to commit"
+        git push
