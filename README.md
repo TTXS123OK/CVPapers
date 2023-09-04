@@ -27,7 +27,7 @@ If there are any issues related to copyright infringement or improper behavior, 
 
 ## Setup
 
-1. Install the required Python library with `pip install arxiv` (or the correct installation command for the arxiv.py library you are using).
+1. Install the required Python library with `pip install arxiv`.
 
 2. Run the Python script to begin fetching papers:
    ```bash
