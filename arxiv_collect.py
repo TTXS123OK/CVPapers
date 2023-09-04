@@ -28,7 +28,7 @@ def main(start_date, end_date, catalog, order):
     count = 0
     success_offset = 0
     current_date = datetime.today() + timedelta(days=1)
-    
+
     retry_count = 0
 
     # Loop through the search results
@@ -36,7 +36,7 @@ def main(start_date, end_date, catalog, order):
         count = success_offset
         buffer.clear()
         current_date = datetime.today() + timedelta(days=1)
-        
+
         try:
             for result in client.results(search, offset=success_offset):
                 count += 1
@@ -44,24 +44,23 @@ def main(start_date, end_date, catalog, order):
                 if published_date.date() != current_date.date() and len(buffer) > 0:
                     write_to_md(buffer)
                     print(
-                        f"Processed {count} papers. Last processed paper published on {published_date.date()}",
+                        f"Processed {count} papers. Last processed paper published on {current_date.date()}",
                         flush=True,
                     )
                     success_offset = count
                     current_date = published_date
 
-                if order == "ascending" and published_date.date() > end_date.date():
+                if (
+                    order == "ascending" and published_date.date() > end_date.date()
+                ) or (
+                    order != "ascending" and published_date.date() < start_date.date()
+                ):
                     print("All Markdown files have been generated.")
                     exit(0)
 
-                if order != "ascending" and published_date.date() < start_date.date():
-                    print("All Markdown files have been generated.")
-                    exit(0)
-
-                if order == "ascending" and published_date.date() < start_date.date():
-                    continue
-
-                if order != "ascending" and published_date.date() > end_date.date():
+                if (
+                    order == "ascending" and published_date.date() < start_date.date()
+                ) or (order != "ascending" and published_date.date() > end_date.date()):
                     continue
 
                 buffer.append(result)
@@ -70,10 +69,10 @@ def main(start_date, end_date, catalog, order):
         except Exception as e:
             print(f"An exception occurred: {e}. Retrying...")
             retry_count += 1
-            if retry_count >= 5: 
+            if retry_count >= 5:
                 print("Reached maximum number of retries. Exiting.")
-                exit(1) 
-                
+                exit(1)
+
             continue
 
 
@@ -90,7 +89,7 @@ def write_to_md(buffer):
 
     if os.path.exists(md_file_path):
         os.remove(md_file_path)
-        
+
     buffer.sort(key=lambda x: x.published)
 
     for result in buffer:
@@ -129,7 +128,7 @@ def write_to_md(buffer):
 
         with open(md_file_path, "w") as f:
             f.write(md_content)
-    
+
     # Clear Buffer
     buffer.clear()
 
