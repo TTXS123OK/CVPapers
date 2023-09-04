@@ -12,6 +12,8 @@ This project is designed to fetch and catalog academic papers from the cs.CV dom
 
 - **Markdown Format**: The fetched paper details are saved in Markdown files, organized by publication date.
 
+- **Interactive Calendar**: Navigate through an [interactive calendar](calendar.md) to easily find papers published on specific dates.
+
 ## Limitations
 
 Due to restrictions on the arXiv API, the data from December 8, 2020, to March 5, 2021, is currently missing from the collection. If anyone has a workaround or solution for this, contributions are greatly appreciated.

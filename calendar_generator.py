@@ -31,7 +31,7 @@ def generate_calendar(base_dir="./cs.CV"):
                 if article.endswith(".md"):
                     days_with_articles[int(month)].add(int(article[-5:-3]))
                     
-            all_markdown += "#####" + calendar.month_name[int(month)] + "\n\n"
+            all_markdown += "##### " + calendar.month_name[int(month)] + "\n\n"
 
             all_markdown += "| Sun | Mon | Tue | Wed | Thu | Fri | Sat |\n"
             all_markdown += "|-----|-----|-----|-----|-----|-----|-----|\n"
@@ -50,7 +50,7 @@ def generate_calendar(base_dir="./cs.CV"):
                 all_markdown += week_str + "\n"
             all_markdown += "\n"
 
-    with open("Calendar.md", "w") as f:
+    with open("calendar.md", "w") as f:
         f.write(all_markdown)
 
 
