@@ -6,7 +6,7 @@ def generate_calendar(base_dir="./cs.CV"):
     years = os.listdir(base_dir)
     years.sort()
 
-    all_markdown = ""
+    all_markdown = "# Calendar of arXiv papers for cs.CV\n\n"
     
     for year in years:
         year_path = os.path.join(base_dir, year)
