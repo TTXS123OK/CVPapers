@@ -3,31 +3,50 @@ name: Fetch arXiv cs.CV Papers
 on:
   schedule:
     - cron: '0 2 * * *'
+  workflow_dispatch:
 
 jobs:
   fetch_papers:
     runs-on: ubuntu-latest
 
     steps:
+    # Step to checkout the code from the repository
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
+    # Step to set up Python environment
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.x'
 
+    # Step to install the required Python packages
     - name: Install dependencies
       run: |
         pip install arxiv
 
-    - name: Run script to fetch papers
-      run: python arxiv_collect.py --catalog cs.CV --start_date $(date -d "yesterday" +"%Y-%m-%d") --end_date $(date -d "yesterday" +"%Y-%m-%d")
-
-    - name: Commit and push changes
+    # Configure git to use the Personal Access Token
+    - name: Configure git
       run: |
         git config --local user.email "874238092@qq.com"
         git config --local user.name "TTXS123OK"
+        git remote add origin_https "https://x-access-token:${{ secrets.MY_GITHUB_TOKEN }}@github.com/TTXS123OK/CVPapers.git"
+
+    # Step to run the fetching script
+    - name: Find the last date in cs.CV
+      run: |
+        last_date=$(find cs.CV -type f -printf "%f\n" | sort -r | head -n 1 | cut -c 1-8)
+        echo "LAST_DATE=${last_date}" >> $GITHUB_ENV
+      
+    - name: Run script to fetch papers
+      run: |
+        next_date=$(date -d "$LAST_DATE + 1 day" +"%Y-%m-%d")
+        end_date=$(date -d "yesterday" +"%Y-%m-%d")
+        python arxiv_collect.py --catalog cs.CV --start_date $next_date --end_date $end_date
+
+    # Step to commit and push the changes
+    - name: Commit and push changes
+      run: |
         git add .
-        git commit -m "Add fetched papers for $(date -d "yesterday" +"%Y-%m-%d")" || echo "No changes to commit"
-        git push
+        git commit -m "Add fetched papers for $(date -d 'yesterday' +'%Y-%m-%d')" || echo "No changes to commit"
+        git push origin_https main  # Note that we changed to origin_https here
