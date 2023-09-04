@@ -27,7 +27,7 @@ def main(start_date, end_date, catalog, order):
     buffer = []
     count = 0
     success_offset = 0
-    current_date = datetime.today() + timedelta(days=1)
+    current_date = None
 
     retry_count = 0
 
@@ -35,16 +35,19 @@ def main(start_date, end_date, catalog, order):
     while True:
         count = success_offset
         buffer.clear()
-        current_date = datetime.today() + timedelta(days=1)
+        current_date = None
 
         try:
             for result in client.results(search, offset=success_offset):
                 count += 1
                 published_date = result.published.replace(tzinfo=None)
+                if current_date is None:
+                    current_date = published_date
+                    
                 if published_date.date() != current_date.date() and len(buffer) > 0:
                     write_to_md(buffer)
                     print(
-                        f"Processed {count} papers. Last processed paper published on {current_date.date()}",
+                        f"Processed {count-1} papers. Last processed paper published on {current_date.date()}",
                         flush=True,
                     )
                     success_offset = count

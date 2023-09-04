@@ -40,9 +40,14 @@ jobs:
       
     - name: Run script to fetch papers
       run: |
-        next_date=$(date -d "$LAST_DATE + 1 day" +"%Y-%m-%d")
+        next_date=$(date -d "$LAST_DATE" +"%Y-%m-%d")
         end_date=$(date -d "yesterday" +"%Y-%m-%d")
         python arxiv_collect.py --catalog cs.CV --start_date $next_date --end_date $end_date
+      
+    # Regenerate calendar
+    - name: Run script to regenerate calendar
+      run: |
+        python calendar_generator.py
 
     # Step to commit and push the changes
     - name: Commit and push changes
