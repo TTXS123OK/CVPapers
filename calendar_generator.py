@@ -4,7 +4,7 @@ from collections import defaultdict
 
 def generate_calendar(base_dir="./cs.CV"):
     years = os.listdir(base_dir)
-    years.sort()
+    years.sort(reverse=True)
 
     all_markdown = "# Calendar of arXiv papers for cs.CV\n\n"
     
@@ -16,7 +16,7 @@ def generate_calendar(base_dir="./cs.CV"):
         all_markdown += f"### {year}\n\n"
 
         months = os.listdir(year_path)
-        months.sort()
+        months.sort(reverse=True)
         
         # Create a defaultdict to hold all the days where articles are present
         days_with_articles = defaultdict(set)
