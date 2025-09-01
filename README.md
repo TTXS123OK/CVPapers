@@ -16,7 +16,7 @@ This project is designed to fetch and catalog academic papers from the cs.CV dom
 
 ## Limitations
 
-Due to restrictions on the arXiv API, the data from December 8, 2020, to March 5, 2021, is currently missing from the collection. If anyone has a workaround or solution for this, contributions are greatly appreciated.
+Please note that data is missing for two periods: from 2020-12-08 to 2021-03-05 (due to arXiv API restrictions) and from 2025-05-31 to 2025-06-18 (due to a repository crash). If you have any workarounds or solutions, contributions are highly welcome.
 
 ## Disclaimer
 

@@ -6,7 +6,7 @@ import argparse
 
 def main(start_date, end_date, catalog, order):
     client = arxiv.Client(
-        page_size=100,  # or any other number less than or equal to 1000
+        page_size=200,  # or any other number less than or equal to 1000
         delay_seconds=3,
         num_retries=5,
     )
