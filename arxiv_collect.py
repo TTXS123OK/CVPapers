@@ -2,6 +2,7 @@ import arxiv
 from datetime import datetime, timedelta
 import os
 import argparse
+import time
 
 
 def main(start_date, end_date, catalog, order):
@@ -70,12 +71,20 @@ def main(start_date, end_date, catalog, order):
                 retry_count = 0
 
         except Exception as e:
-            print(f"An exception occurred: {e}. Retrying...")
             retry_count += 1
             if retry_count >= 5:
+                print(f"An exception occurred: {e}.")
                 print("Reached maximum number of retries. Exiting.")
                 exit(1)
 
+            # arxiv's client ignores Retry-After and only sleeps delay_seconds
+            # between its own retries, so on HTTP 429 we back off here instead.
+            if isinstance(e, arxiv.HTTPError) and e.status == 429:
+                backoff = 60 * retry_count
+            else:
+                backoff = 5
+            print(f"An exception occurred: {e}. Retrying in {backoff}s...", flush=True)
+            time.sleep(backoff)
             continue
 
 
