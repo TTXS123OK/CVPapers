@@ -19,7 +19,7 @@ def main(start_date, end_date, catalog, order):
 
     search = arxiv.Search(
         query="cat:{}".format(catalog),
-        max_results=float("inf"),
+        max_results=None,
         sort_by=arxiv.SortCriterion.SubmittedDate,
         sort_order=sort_order,
     )
